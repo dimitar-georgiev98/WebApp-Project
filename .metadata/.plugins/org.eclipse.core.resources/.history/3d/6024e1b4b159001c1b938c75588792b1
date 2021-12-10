@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Web App</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/font-awesome.min.css" rel="stylesheet">
+<link href="assets/css/main.css" rel="stylesheet">
+
+<script src="js/vendor/jquery/jquery-1.12.1.min.js"></script>
+<script src="js/vendor/bootstrap/bootstrap.min.js"></script>
+<script src="js/main.js"></script>
+
+</head>
+<body>
+
+	<div class="home-page">
+
+		<header>
+			<div class="container">
+				<nav class="navbar navbar-default">
+					<div class="collapse navbar-collapse" id="navbar-collapse">
+						<ul class="nav navbar-nav navbar-center">
+							<li class="active"><a href="index.html"> <span class="nav-label">Add product</span></a></li>
+							<li><a href="products.html"> <span class="nav-label">Products</span></a></li>
+							<li><a href="discount.html"> <span class="nav-label">Discount</span></a></li>
+							<li><a href="index.html" id="logout"> <span class="nav-label">Log out</span></a></li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</header>
+		
+		<div class="container">
+			<center>
+				<div class="form">
+					<hr><h3 class="text-center">Add Product</h3><hr>
+					<form action="add" id="add-product" method="POST">
+						<div class="form-group">
+							<label for="name">Product name</label> 
+							<input type="text" name="name" id="name" class="form-control"> 
+							
+							<label for="description">Product description</label> 
+							<input type="text" name="description" id="description" class="form-control">
+							
+							<label for="price">Product price</label> 
+							<input type="text" name="price" id="price" class="form-control">
+							
+							<!-- <label>Add image</label>
+							<div class="custom-file mb-2">
+								<input type="file" name="imgLocation" class="custom-file-input" id="customFile">
+							</div> -->
+							 <br>
+							<button type="submit" class="btn btn-info add">Add product</button>
+							
+						</div>
+					</form>
+				</div>
+			</center>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			
+			var me;			
+			
+			$('.add').click(function(){
+				name = $('#name').val();
+				description = $('#description').val();
+				price = $('#price').val();
+				imgLocation = $('#customFile').val();
+			});	
+		
+			function addProduct(userId, data) {
+				
+					name = $('#name').val();
+					description = $('#description').val();
+					price = $('#price').val();
+					imgLocation = data.toString();
+					
+					$.ajax({
+						url: "/add",
+						method: "POST",
+						data: {
+							name : name,
+							description : description,
+							price : price,
+							userId : userId,
+							imgLocation : imgLocation
+						},
+						success: function(data) {
+							if(data.includes("Error:")) {
+								alert(data);
+							}else{
+								showProduct(name, description, price, imgLocation, data);
+							}
+						},
+						fail: function() {
+							alert("Error!");
+						}
+					});
+			}
+
+			function getLoggedUser() {
+				$.ajax({
+					url : "/loggedUserId",
+					method : "GET",
+					complete : function(data) {
+						switch (data.status) {
+						case 200:
+							me = data.responseJson;
+							break;
+						case 401:
+							window.location.href = "index.html"
+							break;
+						default:
+							break;
+						}
+					},
+					fail : function() {
+						window.location.href = "home.html";
+					}
+				});
+			}
+			
+			getLoggedUser();
+		});
+
+		$('#logout').on('click', function() {
+
+			$.ajax({
+				url : "logout",
+				method : "POST",
+				complete : function(data) {
+					if (data.status == 418) {
+						alert("Error!");
+					}
+					window.location.href = "index.html";
+				}
+			});
+		});
+	</script>
+</body>
+</html>

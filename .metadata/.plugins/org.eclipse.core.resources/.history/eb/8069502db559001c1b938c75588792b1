@@ -1,0 +1,136 @@
+package uni.fmi.masters.webapplication.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import uni.fmi.masters.webapplication.entities.DiscountEntity;
+import uni.fmi.masters.webapplication.entities.ProductEntity;
+import uni.fmi.masters.webapplication.entities.UserEntity;
+import uni.fmi.masters.webapplication.repositories.DiscountRepository;
+import uni.fmi.masters.webapplication.repositories.ProductRepository;
+
+@RestController
+public class DiscountController {
+	
+	ProductRepository productRepo;
+	DiscountRepository discountRepo;
+	
+	public DiscountController(ProductRepository productRepo, DiscountRepository discountRepo) {
+		this.productRepo = productRepo;
+		this.discountRepo = discountRepo;
+	}
+
+	@PostMapping(path = "/discount/add")
+	public String addDiscount(
+			@RequestParam(value = "discount") double discount,
+			@RequestParam(value = "productId") int id,
+			HttpSession session) {
+
+		UserEntity user = (UserEntity) session.getAttribute("user");
+
+		if (user != null) {
+
+			Optional<ProductEntity> optionalProduct = productRepo.findById(id);
+			
+			if (optionalProduct.isPresent()) {
+
+				ProductEntity product = optionalProduct.get();
+				DiscountEntity discountEntity = new DiscountEntity();
+
+				discountEntity.setProduct(product);
+				discountEntity.setDiscount(discount);
+				discountEntity = discountRepo.saveAndFlush(discountEntity);
+
+				if (discountEntity != null) {
+					return String.valueOf(discountEntity.getId());
+				}
+			}
+
+			return "Discount not inserted!";
+		}
+		return "Error!";
+	}
+	
+	@PostMapping(path = "/discount/update")
+	public String updateDiscount(
+			@RequestParam(value = "discountId") int id,
+			@RequestParam(value = "discount") double discount,
+			HttpSession session) {
+
+		UserEntity user = (UserEntity) session.getAttribute("user");
+
+		if (user != null) {
+
+			Optional<DiscountEntity> optionalDiscount = discountRepo.findById(id);
+
+			if (optionalDiscount.isPresent()) {
+
+				DiscountEntity discountEntity = optionalDiscount.get();
+
+				discountEntity.setId(id);
+				discountEntity.setDiscount(discount);
+				discountEntity = discountRepo.saveAndFlush(discountEntity);
+
+				if (discountEntity != null) {
+					return String.valueOf(discountEntity.getId());
+				}
+			}
+
+			return "Discount not updated!";
+		}
+		return "Error!";
+	}
+	
+	@GetMapping(path="/discount/all")
+	public ResponseEntity<List<DiscountEntity>> getAllDiscounts(HttpSession session){
+		
+		UserEntity user = (UserEntity) session.getAttribute("user");
+		
+		if(user != null) {
+			List<DiscountEntity> discount = discountRepo.findByUser(user);
+			
+			return new ResponseEntity<List<DiscountEntity>>(discount, HttpStatus.OK);
+		}
+		return new ResponseEntity<List<DiscountEntity>>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
+	}
+	
+
+	@DeleteMapping(path="/discount/delete")
+	public ResponseEntity<Boolean> deleteDiscount(
+			@RequestParam(value = "id") int id,
+			HttpSession session){
+		
+		UserEntity user = (UserEntity) session.getAttribute("user");
+		
+		if(user == null) {
+			return new ResponseEntity<Boolean>(false, HttpStatus.UNAUTHORIZED);
+		}
+		
+		Optional<DiscountEntity> optionalDiscount = discountRepo.findById(id);
+		
+		if(optionalDiscount.isPresent()) {
+			DiscountEntity discount = optionalDiscount.get();
+			
+			if(discount.getProduct().getUser().getId() == user.getId()) {
+				discountRepo.delete(discount);
+				return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+			}else {
+				return new ResponseEntity<Boolean>(false, HttpStatus.FORBIDDEN);
+			}
+		
+		}else {
+			return new ResponseEntity<Boolean>(false, HttpStatus.NOT_FOUND);
+		}	
+	}
+}

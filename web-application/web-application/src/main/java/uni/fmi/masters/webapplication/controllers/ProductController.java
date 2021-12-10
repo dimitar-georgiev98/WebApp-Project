@@ -17,15 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import uni.fmi.masters.webapplication.entities.ProductEntity;
 import uni.fmi.masters.webapplication.entities.UserEntity;
 import uni.fmi.masters.webapplication.repositories.ProductRepository;
-import uni.fmi.masters.webapplication.repositories.UserRepository;
 
 @RestController
 public class ProductController {
 
 	ProductRepository productRepo;
-	UserRepository userRepo;
 
-	public ProductController(ProductRepository productRepo, UserRepository userRepo) {
+	public ProductController(ProductRepository productRepo) {
 		this.productRepo = productRepo;
 		
 	}
@@ -35,7 +33,6 @@ public class ProductController {
 			@RequestParam(value = "name") String name,
 			@RequestParam(value = "description") String description, 
 			@RequestParam(value = "price") double price,
-			@RequestParam(value = "imgLocation") String image, 
 			HttpSession session) {
 
 		UserEntity user = (UserEntity) session.getAttribute("user");
@@ -47,7 +44,6 @@ public class ProductController {
 			product.setName(name);
 			product.setDescription(description);
 			product.setPrice(price);
-			product.setImgLocation(image); // TODO:: add image
 			product.setUser(user);
 
 			product = productRepo.saveAndFlush(product);
@@ -64,7 +60,6 @@ public class ProductController {
 	@PostMapping(path = "/update")
 	public String updateProduct(@RequestParam(value = "productId") int id, @RequestParam(value = "name") String name,
 			@RequestParam(value = "description") String description, @RequestParam(value = "price") double price,
-			// @RequestParam(value = "imgLocation") String image,
 			HttpSession session) {
 
 		UserEntity user = (UserEntity) session.getAttribute("user");
@@ -81,7 +76,6 @@ public class ProductController {
 				product.setName(name);
 				product.setDescription(description);
 				product.setPrice(price);
-				// product.setImgLocation(image); //TODO:: add image
 				product.setUser(user);
 
 				product = productRepo.saveAndFlush(product);

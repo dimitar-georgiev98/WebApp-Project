@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Web App</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
+
+    <script src="js/vendor/jquery/jquery-1.12.1.min.js"></script>
+    <script src="js/vendor/bootstrap/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+</head>
+<body>
+
+<div class="login-page">
+    <header>
+        <div class="container">
+            <nav class="navbar-default">
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row login-container">
+                <form id="login-form" class="basic-panel" action="login" method="POST">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="password">
+                        </div>
+                    </div>
+                    <input type="hidden" name="action" value="login">
+                    <button id="login" type="submit" class="btn btn-info">Log in</button>
+                    <button id="register" type="button" class="btn btn-primary pull-right">Register</button>
+                </form>
+        </div>
+    </div>
+    
+    <div id="register-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content" style="width:360px">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Register</h4>
+                </div>
+                <div class="modal-body">
+
+                    <form id="register-form" action="register" method="POST">
+                        <div class="form-group">
+                            <label for="register-user">Username</label>
+                            <input type="text" class="form-control" id="register-user" name="username" placeholder="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">E-mail</label>
+                            <input type="email" class="form-control" id="register-email" name ="email" placeholder="example@gmail.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-pass">Password</label>
+                            <input type="password" class="form-control" id="register-pass" name="password" placeholder="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-register-pass">Confirm password</label>
+                            <input type="password" class="form-control" id="confirm-register-pass" name="repeatPassword" placeholder="repeat password">
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="register" form="register-form"  class="btn btn-info">Register</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+
+
+
+<script>
+    bindEvents();
+    
+    $('#login-form').submit(function(e){
+    	e.preventDefault();
+    	
+    	$.ajax({
+    		url: "login",
+    		method: "POST",
+    		data: {
+    			username : $('#username').val(),
+    			password : $('#password').val()
+    		},
+    		success: function(data){
+    			window.location.replace(data);
+    		},
+    		fail: function(){
+    			alert("Request failed");
+    			//window.location.replace("error.html");	
+    		}
+    	});
+    });
+    
+    $('#register').click(function(e){
+    	e. preventDefault();
+    	
+    	window.location.href="index.html";
+    });
+    
+    
+</script>
+</body>
+</html>

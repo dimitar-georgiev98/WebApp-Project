@@ -29,9 +29,6 @@ public class ProductEntity implements Serializable {
 	@Column(name = "price", length = 6, nullable = false)
 	private double price;
 	
-	@Column(name = "img_location", length = 255)
-	private String imgLocation;
-	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private UserEntity user;
@@ -74,14 +71,6 @@ public class ProductEntity implements Serializable {
 
 	public void setPrice(double price) {
 		this.price = price;
-	}
-
-	public String getImgLocation() {
-		return imgLocation;
-	}
-
-	public void setImgLocation(String imgLocation) {
-		this.imgLocation = imgLocation;
 	}
 
 	public UserEntity getUser() {
