@@ -41,18 +41,16 @@
                 <div class="col-sm-12">
 				<center>
 				<div class="form-group">
-					<label for="discountId">Категория</label>
+					<label for="discountId">Select Product</label>
 					<select class="form-control" id="discountId" name="discountId">
-						
-					</select> <label for="discountName">Име</label> <input type="number"
+						<br>
+					</select> <label for="discountName">Discount percentage</label> <input type="number"  min="0"
 						class="form-control" id="discountName" name="discountName"
-						placeholder="Въведете име"> 
+						placeholder="Enter discount percentage"> 
 				</div>
-				
-				<button type="button" class="btn btn-primary add">Добави</button>
-				
+				<button type="button" class="btn btn-info add">Add discount</button>
 				</center>
-
+					<br>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">Discounts</h3>
@@ -79,7 +77,7 @@
                                     </div>
                                     <div class="col-sm-3 col-xs-12">
                                     <button type="button" class="btn btn-danger pull-right remove-post delete"><span class="glyphicon glyphicon-remove"></span> Delete </button>    
-                                    <button id="update" type="button" class="btn btn-success pull-right update"><span class="glyphicon glyphicon-plus"></span> Update </button>
+                                    <button id="update" type="button" class="btn btn-info pull-right update"><span class="glyphicon glyphicon-plus"></span> Update </button>
                                     </div>
                                 </div>
                         </li>    
@@ -95,21 +93,13 @@
 
                    
                         <div class="form-group">
-                            <label for="update-name">Update name</label>
-                            <input type="text" class="form-control" id="update-name" name="update-name">
-                            <p class="help-block">Полето "потребител" е празно</p>
+                            <label for="update-name">Update discount percentage</label>
+                            <input input type="number"  min="0" class="form-control" id="update-name" name="update-name">
                         </div>
-                       <!--  <div class="form-group">
-                            <label for="update-discount">Update discount</label>
-                            <input type="text" class="form-control" id="update-description" name ="update-description">
-                            <p class="help-block">Полето "Email" е празно</p>
-                        </div> -->
-                    
-       
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button"  class="btn btn-success update2">Update discount</button>
+                    <button type="button"  class="btn btn-info update2">Update discount</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

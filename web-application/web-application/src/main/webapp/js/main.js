@@ -13,8 +13,7 @@ function updateClick(name, description, price){
 	$('#update-price').val(price);
 }
 
-function updateDiscountClick(name/*, discountName*/){
+function updateDiscountClick(name){
 	$('#update-discount-modal').modal('show');
 	$('#update-name').val(name);
-	/*$('#update-discount').val(discountName);*/
 }

@@ -1,7 +1,6 @@
 package uni.fmi.masters.webapplication.controllers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,12 +109,6 @@ public class ProductController {
 		}
 		return new ResponseEntity<List<ProductEntity>>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
 	}
-	
-	
-//	@GetMapping(path="/product/all")
-//	public List<ProductEntity> getAllProducts(){
-//		return productRepo.findAll();
-//	}
 	
 	
 	@DeleteMapping(path="/product/delete")

@@ -16,13 +16,6 @@ import javax.persistence.Table;
 @Table(name = "product")
 public class ProductEntity implements Serializable {
 	
-// 		CREATE TABLE PRODUCT(
-//		ID IDENTITY PRIMARY KEY,
-//		NAME VARCHAR(255) NOT NULL,
-//		DESCRIPTION VARCHAR(255) NOT NULL,
-//		PRICE DECIMAL(6,2) NOT NULL,
-//		IMAGE_LOCATION VARCHAR(255) DEFAULT 'no_image.jpg');
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;

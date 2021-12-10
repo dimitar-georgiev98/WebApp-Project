@@ -59,7 +59,7 @@ public class DiscountController {
 
 			return "Discount not inserted!";
 		}
-		return "Error: !";
+		return "Error!";
 	}
 	
 	@PostMapping(path = "/discount/update")
@@ -87,11 +87,10 @@ public class DiscountController {
 				}
 			}
 
-			return "Discount not inserted!";
+			return "Discount not updated!";
 		}
-		return "Error: !";
+		return "Error!";
 	}
-	
 	
 	@GetMapping(path="/discount/all")
 	public ResponseEntity<List<DiscountEntity>> getAllDiscounts(HttpSession session){
@@ -132,7 +131,6 @@ public class DiscountController {
 		
 		}else {
 			return new ResponseEntity<Boolean>(false, HttpStatus.NOT_FOUND);
-		}
-		
+		}	
 	}
 }

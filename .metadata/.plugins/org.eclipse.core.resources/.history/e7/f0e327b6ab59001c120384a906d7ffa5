@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Web App</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/font-awesome.min.css" rel="stylesheet">
+<link href="assets/css/main.css" rel="stylesheet">
+
+<script src="js/vendor/jquery/jquery-1.12.1.min.js"></script>
+<script src="js/vendor/bootstrap/bootstrap.min.js"></script>
+<script src="js/main.js"></script>
+
+</head>
+<body>
+	<div class="home-page">
+		<header>
+			<div class="container">
+				<nav class="navbar navbar-default">
+					<div class="collapse navbar-collapse" id="navbar-collapse">
+						<ul class="nav navbar-nav navbar-center">
+							<li><a href="home.html"> <span class="nav-label">Add product</span></a></li>
+							<li><a href="products.html"> <span class="nav-label">Products</span></a></li>
+							<li class="active"><a href="discount.html"><span class="nav-label">Discount</span></a></li>
+							<li><a href="index.html"> <span class="nav-label">Log out</span></a></li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</header>
+				
+		<div class="container">
+            <div class="row" style="margin-top:30px;">
+                <div class="col-sm-12">
+				<center>
+				<div class="form-group">
+					<label for="discountId">Select Product</label>
+					<select class="form-control" id="discountId" name="discountId">
+						
+					</select> <label for="discountName">Discount percentage</label> <input type="number"
+						class="form-control" id="discountName" name="discountName"
+						placeholder="Въведете име"> 
+				</div>
+				<button type="button" class="btn btn-info add">Add discount</button>
+				</center>
+					<br>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Discounts</h3>
+                        </div>
+
+	
+                        <ul class="list-group" style="min-height:241px;" id="products-list">
+                                                           
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+         				<li class="list-group-item" style="display:none;" id="product">
+                                <div class="row">
+                                    <div class="col-sm-2 col-xs-3">
+                                        <img class="img-thumbnail" src="assets/img/user.jpg">                                    
+                                   </div>
+                                    <div class="col-sm-6 col-xs-7">
+                                        <h4>Name</h4>
+                                        <h6>Discount</h6> 
+                                       
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12">
+                                    <button type="button" class="btn btn-danger pull-right remove-post delete"><span class="glyphicon glyphicon-remove"></span> Delete </button>    
+                                    <button id="update" type="button" class="btn btn-success pull-right update"><span class="glyphicon glyphicon-plus"></span> Update </button>
+                                    </div>
+                                </div>
+                        </li>    
+                        
+      <div id="update-discount-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content" style="width:360px">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Update discount</h4>
+                </div>
+                <div class="modal-body">
+
+                   
+                        <div class="form-group">
+                            <label for="update-name">Update name</label>
+                            <input type="text" class="form-control" id="update-name" name="update-name">
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button"  class="btn btn-info update2">Update discount</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+<script>
+
+	$(document).ready(function () {
+		
+		var me;
+		
+		$('.add').click(function(){
+			addDiscount();
+		});	
+	
+		function addDiscount() {
+			
+			var select = document.getElementById('discountId');
+			var productId = select.options[select.selectedIndex].value;
+			var text = select.options[select.selectedIndex].text;
+			
+			discountName = $('#discountName').val();
+				
+				$.ajax({
+					url: "/discount/add",
+					method: "POST",
+					data: {
+						discount : discountName,
+						productId : productId,
+					},
+					success: function(data) {
+						if(data.includes("Error:")) {
+							alert(data);
+						}else{
+							showDiscount(text, discountName, data);
+						}
+					},
+					fail: function() {
+						alert("Error!");
+					}
+				});
+		}
+		
+		function showDiscount(name, discountName, discountId){
+			var product = $('#product').clone();
+			
+			product.find('h4').text(name);
+			 product.find('h6').text(discountName); 
+			
+			
+				product.find('.delete').click(function() {
+					deleteDiscount(product, discountId);
+				});
+				product.find('.update').click(function() {
+					updateDiscount(discountName, discountId);
+					
+				});
+			
+			
+			$('#products-list').prepend(product);
+			$('#product').val("");
+			
+			product.show();
+		}
+		
+		
+		function getAllProducts() {
+			$.ajax({
+				url: "/product/all",
+				method: "GET",
+				success: function(data) {
+					data.forEach(function (product) {
+						var select = document.getElementById("discountId");
+						var el = document.createElement("option");
+						 el.textContent = product.name;
+						 el.value = product.id;
+						 select.appendChild(el);
+					});
+				},
+				fail : function() {
+					alert("Error! Can't load products!")
+				}
+			});
+		}
+		
+		function getAllDiscounts() {
+			$.ajax({
+				url: "/discount/all",
+				method: "GET",
+				success: function(data) {
+					data.forEach(function (discount) {
+						showDiscount(discount.product.name, discount.discount, discount.id, discount.product.user.id);
+					});
+				},
+				fail : function() {
+					alert("Error! Can't load products!")
+				}
+			});
+		}
+		
+		function getLoggedUser() {
+			$.ajax({
+				url : "/loggedUserId",
+				method : "GET",
+				complete : function(data) {
+					switch (data.status) {
+					case 200:
+						me = data.responseJson;
+						break;
+					case 401:
+						window.location.href = "index.html"
+						break;
+					default:
+						break;
+					}
+				},
+				fail : function() {
+					window.location.href = "home.html";
+				}
+			});
+		}
+        
+		getLoggedUser();
+		getAllProducts();
+		getAllDiscounts();
+		
+		function updateDiscountClick(name, discountName){
+			$('#update-discount-modal').modal('show');
+			$('#update-name').val(name);
+			$('#update-description').val(description);
+		}
+
+		
+	});
+	
+	
+	function deleteDiscount(product, id){
+		$.ajax({
+			url: "/discount/delete",
+			method : "DELETE",
+			data: {
+				id: id
+			},
+			complete: function(data){
+				switch(data.status) {
+				case 200:
+					product.remove();
+					break;
+				case 401:
+					window.location.href = "discount.html";
+					break;
+				case 403:
+					alert("Do not have permessions to delete!");
+				case 404:
+					alert("Product not found!");
+					miniMe.remove();
+					break;
+				}
+			}
+		});
+	}
+	
+	
+	
+	function updateDiscount(name, /* discountName, */ productId){
+		updateDiscountClick(name/* , discountName */);
+		
+		 $('.update2').click(function(){
+				//name = $('#update-name').val();
+				//description = $('#update-description').val();
+				//price = $('#update-price').val();
+				//imgLocation = $('#customFile').val();
+				
+				//updateProduct(name, description, price, productId);
+				
+				 	/* name1 = $('#update-name').val(); */
+					discount1 = $('#update-name').val();
+					
+					
+					
+					$.ajax({
+						url: "/discount/update",
+						method: "POST",
+						data: {
+							discountId : productId,
+							discount : discount1
+							
+						},
+						success: function(data) {
+							if(data.includes("Error:")) {
+								alert(data);
+							}else{
+								window.location.href="discount.html";
+							}
+						},
+						fail: function() {
+							alert("Error!");
+						}
+					});
+				
+				
+			});	 
+		
+	}
+  
+</script>        
+</body>
+</html>

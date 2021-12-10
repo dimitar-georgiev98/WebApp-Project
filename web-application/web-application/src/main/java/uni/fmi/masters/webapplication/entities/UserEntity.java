@@ -18,12 +18,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({"products"})
 public class UserEntity implements Serializable{
 	
-//			  CREATE TABLE USER(
-//			   ID IDENTITY PRIMARY KEY,
-//			   USERNAME VARCHAR(255) NOT NULL UNIQUE,
-//			   PASSWORD VARCHAR(32) NOT NULL,
-//			   EMAIL VARCHAR(255) NOT NULL UNIQUE,
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
